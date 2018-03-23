@@ -1,3 +1,6 @@
+import Entity.Id;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,9 +12,17 @@ public class SimpleShell {
 
 
     public static void prettyPrint(String output) {
-        // yep, make an effort to format things nicely, eh?
-        System.out.println(output);
+        ObjectMapper jacksonMapper = new ObjectMapper();
+        try {
+            Object jsonObject = jacksonMapper.readValue(output, Id.class);
+            String prettyJson = jacksonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+            System.out.println(prettyJson);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
+
     public static void main(String[] args) throws java.io.IOException {
 
         YouAreEll webber = new YouAreEll();

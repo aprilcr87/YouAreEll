@@ -17,13 +17,13 @@ all the ids registered by sending a GET request to the same URL. Once you've rec
 messages to the world or to a specific Github_id.
 
 You 
-can send a message to the global timeline by POSTing a Message JSON object to the URL below.
+can send a message to the global timeline by POSTing a Entity.Message JSON object to the URL below.
 If you leave the "to id" field empty, the message is "to the world". If you fill out the the JSON template with
 a valid github_id in the "to id" field of the JSON payload, then that message is addressed to that friend. Yes, all 
 messages can be seen by users of the system. There are JSON templates below for both Ids and Messages.
 
-When you send a new Message or Id JSON object to the server, it records it, and fills in one or two fields. 
-A Message gets an assigned sequence number and a timestamp of when it was received by the server. An ID
+When you send a new Entity.Message or Entity.Id JSON object to the server, it records it, and fills in one or two fields. 
+A Entity.Message gets an assigned sequence number and a timestamp of when it was received by the server. An ID
 object gets a "user id" field assigned to it.
 Any sequence number, timestamp or userid you put into a JSON template
 gets overwritten by the server when you POST it. 
@@ -54,7 +54,7 @@ It's possible you may also need to understand some of what the Jackson package d
 
 * jackson json https://github.com/FasterXML/jackson
 
-And you may wish to create a couple classes `public class Message` and `public class Id` to make handling
+And you may wish to create a couple classes `public class Entity.Message` and `public class Entity.Id` to make handling
 the abstractions implied by the API easier.
 
 Jackson can help you parse the json into objects,and objects back into JSON strings. Be sure to research how you can
@@ -105,7 +105,7 @@ and send it as the body of a POST request to  `http://zipcode.rocks:8085/ids/`
  
 ## Messages
 
-#### Message comands in shell
+#### Entity.Message comands in shell
 
 in the shell, 
 * `messages` should return the last 20 messages, nicely formatted.
