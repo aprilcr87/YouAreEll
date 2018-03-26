@@ -1,12 +1,14 @@
-import com.fasterxml.jackson.core.JsonProcessingException;
+import Entity.GitHubUser;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class YouAreEll {
 
@@ -14,35 +16,48 @@ public class YouAreEll {
     }
 
     public static void main(String[] args) {
+//      jackson mapper
+        ObjectMapper mapper = new ObjectMapper();
         YouAreEll urlhandler = new YouAreEll();
 
-        Unirest.setObjectMapper(new ObjectMapper() {
-            private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper
-                    = new com.fasterxml.jackson.databind.ObjectMapper();
+//       Unirest.setObjectMapper(mapper);
+//      list to store github users
+        String json = urlhandler.MakeURLCall("/ids", "GET", "");
+        System.out.println(json);
+        List<GitHubUser> list = new ArrayList<GitHubUser>();
+        try {
+//      type reference is a list of github users
+           list = mapper.readValue(json, new TypeReference<List<GitHubUser>>(){});
+            System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(list));
 
-            public <T> T readValue(String value, Class<T> valueType) {
-                try {
-                    return jacksonObjectMapper.readValue(value, valueType);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
-            public String writeValue(Object value) {
-                try {
-                    return jacksonObjectMapper.writeValueAsString(value);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+        for(GitHubUser gitHubUser : list){
+            System.out.println(gitHubUser.toString());
+        }
 
-        System.out.println(urlhandler.MakeURLCall("/ids", "GET", ""));
-        System.out.println(urlhandler.MakeURLCall("/messages", "GET", ""));
+        GitHubUser april = new GitHubUser("aprilcr8777", "APRILAGAIN", "32585650");
+        try {
+        String jsonPayLoad =  mapper.writeValueAsString(april);
+        System.out.println(jsonPayLoad);
+
+            urlhandler.MakeURLCall("/ids", "POST", mapper.writeValueAsString(april));
+            } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public String get_ids() {
         return MakeURLCall("/ids", "GET", "");
+    }
+
+    public List<GitHubUser> get_idsAsList() throws Exception{
+        ObjectMapper objectMapper = new ObjectMapper();
+
+     return objectMapper.readValue(MakeURLCall("/ids", "GET", ""), new TypeReference<List<GitHubUser>>(){});
+
     }
 
     public String get_messages() {

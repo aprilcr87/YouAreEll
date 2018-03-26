@@ -1,3 +1,4 @@
+import Entity.GitHubUser;
 import Entity.Id;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,15 +12,15 @@ import java.util.List;
 public class SimpleShell {
 
 
-    public static void prettyPrint(String output) {
+    public static void prettyPrint(Object output) {
         ObjectMapper jacksonMapper = new ObjectMapper();
         try {
-            Object jsonObject = jacksonMapper.readValue(output, Id.class);
-            String prettyJson = jacksonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-            System.out.println(prettyJson);
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(jacksonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(output));
+
         }
+            catch (Exception e){
+                e.printStackTrace();
+            }
 
     }
 
@@ -71,10 +72,15 @@ public class SimpleShell {
 
                 // ids
                 if (list.contains("ids")) {
-                    String results = webber.get_ids();
-                    SimpleShell.prettyPrint(results);
-                    continue;
+                    try {
+                        List<GitHubUser> results = webber.get_idsAsList();
+                        SimpleShell.prettyPrint(results);
+                        continue;
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
+
 
                 // messages
                 if (list.contains("messages")) {
